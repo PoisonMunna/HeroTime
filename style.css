@@ -1,0 +1,325 @@
+:root {
+    --g: #00ff41;
+    --gd: #004d14;
+    --r: #ff1a1a;
+    --bg: #020208;
+}
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body {
+    width:100%; height:100%; overflow:hidden;
+    font-family:'Orbitron',monospace;
+    background:var(--bg); color:#dfe4ed;
+    user-select:none;
+}
+
+/* ========== 1. ALIEN BG ========== */
+#alien-bg {
+    position:fixed; inset:0; z-index:1;
+    overflow:hidden;
+    opacity:0;
+    transition:opacity 1s ease;
+    pointer-events:none;
+}
+#alien-bg.on { opacity:1; }
+
+#alien-bg-dark {
+    position:absolute; inset:0; z-index:2;
+    background:radial-gradient(ellipse at center,rgba(0,0,0,.45),rgba(0,0,0,.88) 70%);
+}
+
+#alien-bg-img {
+    position:absolute; z-index:1;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    max-width:80%; max-height:80%;
+    object-fit:contain;
+    opacity:0.14;
+    filter:drop-shadow(0 0 50px rgba(0,255,65,.12)) saturate(.5);
+    animation:abgFloat 5s ease-in-out infinite;
+}
+@keyframes abgFloat {
+    0%,100% { transform:translate(-50%,-50%) scale(1); }
+    50% { transform:translate(-50%,-52%) scale(1.03); }
+}
+
+#alien-bg.red #alien-bg-img {
+    filter:drop-shadow(0 0 50px rgba(255,26,26,.12)) saturate(.3) hue-rotate(-40deg);
+}
+#alien-bg.red #alien-bg-dark {
+    background:radial-gradient(ellipse at center,rgba(0,0,0,.45),rgba(10,0,0,.9) 70%);
+}
+
+#alien-bg-text {
+    position:absolute; z-index:3;
+    bottom:20%; left:50%; transform:translateX(-50%);
+    font-size:clamp(30px,7vw,80px);
+    font-weight:900; letter-spacing:6px;
+    color:rgba(0,255,65,.035);
+    white-space:nowrap; pointer-events:none;
+}
+#alien-bg.red #alien-bg-text { color:rgba(255,26,26,.035); }
+
+/* ========== 2. CANVAS ========== */
+#c { position:fixed; inset:0; display:block; z-index:2; }
+
+/* ========== 3. OVERLAYS ========== */
+#grid-overlay {
+    position:fixed; inset:0; z-index:3; pointer-events:none;
+    background-image:
+        linear-gradient(rgba(0,255,65,.008) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(0,255,65,.008) 1px,transparent 1px);
+    background-size:50px 50px;
+    animation:gridSlide 30s linear infinite;
+}
+@keyframes gridSlide { to { transform:translate(50px,50px); } }
+
+#glow-overlay {
+    position:fixed; inset:0; z-index:3; pointer-events:none;
+    background:
+        radial-gradient(ellipse at 50% 90%,rgba(0,255,65,.035),transparent 40%),
+        radial-gradient(ellipse at 20% 20%,rgba(0,255,65,.015),transparent 50%);
+}
+
+.scanlines {
+    position:fixed; inset:0; z-index:4; pointer-events:none;
+    background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.008) 2px,rgba(0,0,0,.008) 4px);
+}
+.vignette {
+    position:fixed; inset:0; z-index:4; pointer-events:none;
+    background:radial-gradient(ellipse at center,transparent 35%,rgba(0,0,0,.7) 100%);
+}
+#flash {
+    position:fixed; inset:0; z-index:9999;
+    pointer-events:none; opacity:0;
+}
+
+/* ========== 4. HOLOGRAM ========== */
+#holo {
+    position:fixed;
+    top:0; left:50%; transform:translateX(-50%);
+    width:100%; max-width:850px;
+    height:48vh;
+    z-index:6; pointer-events:none;
+    opacity:0;
+    display:flex; flex-direction:column;
+    align-items:center; justify-content:flex-end;
+    transition:opacity .5s ease;
+}
+#holo.on { opacity:1; pointer-events:auto; }
+
+#beam1 {
+    position:absolute; bottom:-60px; left:50%;
+    transform:translateX(-50%);
+    width:3px; height:0;
+    background:linear-gradient(to top,var(--g),transparent);
+    opacity:.4; z-index:1;
+    transition:height .7s ease;
+}
+#holo.on #beam1 { height:120%; }
+
+#beam2 {
+    position:absolute; bottom:-60px; left:50%;
+    transform:translateX(-50%);
+    width:0; height:0;
+    clip-path:polygon(47% 100%,53% 100%,85% 0%,15% 0%);
+    background:linear-gradient(to top,rgba(0,255,65,.06),transparent);
+    z-index:0; opacity:0;
+    transition:all .9s ease;
+}
+#holo.on #beam2 { width:550px; height:120%; opacity:1; }
+
+/* ========== COVERFLOW ========== */
+#coverflow {
+    position:relative;
+    width:100%; height:calc(100% - 40px);
+    perspective:1400px;
+    overflow:visible; z-index:10;
+    display:flex; align-items:center; justify-content:center;
+}
+#cf-track {
+    position:relative; width:100%; height:100%;
+    transform-style:preserve-3d;
+}
+
+.cf-card {
+    position:absolute; top:50%; left:50%;
+    width:250px; height:320px;
+    margin-left:-125px; margin-top:-160px;
+    transform-style:preserve-3d;
+    cursor:pointer; pointer-events:auto;
+    display:flex; align-items:center; justify-content:center;
+    will-change:transform,opacity;
+}
+.cf-card img {
+    max-width:100%; max-height:100%;
+    object-fit:contain; pointer-events:none;
+}
+.cf-card.on img {
+    filter:
+        drop-shadow(0 0 20px rgba(0,255,65,.5))
+        drop-shadow(0 0 50px rgba(0,255,65,.2))
+        drop-shadow(0 0 90px rgba(0,255,65,.06));
+    animation:cfBob 3s ease-in-out infinite;
+}
+@keyframes cfBob {
+    0%,100% { transform:translateY(0); }
+    50% { transform:translateY(-6px); }
+}
+.cf-card:not(.on) img {
+    filter:brightness(.35) saturate(.2) drop-shadow(0 0 4px rgba(0,255,65,.08));
+    animation:none;
+}
+
+#holo-scan {
+    position:absolute; top:8%; left:50%; transform:translateX(-50%);
+    width:320px; height:2px;
+    background:linear-gradient(90deg,transparent,rgba(0,255,65,.12),rgba(0,255,65,.3),rgba(0,255,65,.12),transparent);
+    z-index:15; pointer-events:none;
+    animation:scanGo 3s linear infinite; opacity:.4;
+}
+@keyframes scanGo {
+    0%{top:5%;opacity:0} 10%{opacity:.4} 90%{opacity:.4} 100%{top:80%;opacity:0}
+}
+
+#holo-name {
+    font-size:19px; font-weight:900; letter-spacing:4px;
+    color:var(--g);
+    text-shadow:0 0 8px var(--g),0 0 25px rgba(0,255,65,.3);
+    z-index:20; white-space:nowrap; margin-top:3px;
+}
+#holo-sub {
+    font-family:'Rajdhani',sans-serif;
+    font-size:10px; letter-spacing:2px;
+    color:rgba(0,255,65,.28); z-index:20;
+    white-space:nowrap; margin-top:1px;
+}
+
+/* ========== 5. UI ========== */
+#ui {
+    position:fixed; inset:0; z-index:10;
+    pointer-events:none;
+    display:flex; flex-direction:column;
+    align-items:center; padding:10px 14px;
+}
+#ui > * { pointer-events:auto; }
+
+#topbar {
+    width:100%; display:flex; justify-content:space-between; align-items:center;
+    padding:8px 12px;
+    background:rgba(4,6,16,.88);
+    border:1px solid rgba(0,255,65,.05);
+    border-radius:9px;
+    backdrop-filter:blur(14px);
+    flex-shrink:0;
+}
+.tb-left { display:flex; align-items:center; gap:7px; }
+#indicator {
+    width:7px; height:7px; border-radius:50%;
+    background:var(--g);
+    box-shadow:0 0 5px var(--g),0 0 12px var(--g);
+    display:inline-block;
+    animation:blink 2s ease-in-out infinite;
+}
+@keyframes blink {
+    0%,100%{opacity:.5;transform:scale(1)} 50%{opacity:1;transform:scale(1.3)}
+}
+#status-text { font-size:8px; letter-spacing:2px; color:rgba(0,255,65,.25); }
+#mode-tag {
+    font-size:7px; letter-spacing:2px; padding:2px 8px;
+    border:1px solid rgba(0,255,65,.25); border-radius:4px;
+    color:var(--g); opacity:.7;
+}
+
+#arrows {
+    margin-top:auto;
+    display:flex; align-items:center; gap:18px;
+    opacity:0; pointer-events:none;
+    transition:opacity .3s; flex-shrink:0;
+}
+#arrows.on { opacity:1; pointer-events:auto; }
+.arr-btn {
+    width:42px; height:42px; border-radius:50%;
+    border:1.5px solid rgba(0,255,65,.15);
+    background:rgba(0,255,65,.02); color:var(--g);
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+    transition:all .2s;
+}
+.arr-btn:hover { background:rgba(0,255,65,.08); border-color:var(--g); box-shadow:0 0 16px rgba(0,255,65,.15); transform:scale(1.06); }
+.arr-btn:active { transform:scale(.88); }
+#page-num { font-size:10px; letter-spacing:2px; color:rgba(0,255,65,.25); min-width:50px; text-align:center; }
+
+#slam-box {
+    margin-top:5px; opacity:0; pointer-events:none;
+    transition:opacity .3s; flex-shrink:0;
+}
+#slam-box.on { opacity:1; pointer-events:auto; }
+#slam-btn {
+    position:relative; width:58px; height:58px;
+    border:none; border-radius:50%; background:transparent;
+    cursor:pointer; display:flex; align-items:center; justify-content:center;
+}
+.slam-anim {
+    position:absolute; inset:0;
+    border:2px solid rgba(0,255,65,.2); border-radius:50%;
+    animation:slamAnim 1.5s ease-in-out infinite;
+}
+@keyframes slamAnim { 0%,100%{transform:scale(1);opacity:.3} 50%{transform:scale(1.12);opacity:.9} }
+.slam-circle {
+    display:block; width:38px; height:38px; border-radius:50%;
+    background:radial-gradient(circle at 38% 38%,rgba(255,255,255,.18),var(--g) 50%,var(--gd));
+    box-shadow:0 0 14px var(--g),0 0 30px rgba(0,255,65,.2);
+    transition:all .12s;
+}
+#slam-btn:hover .slam-circle { box-shadow:0 0 22px var(--g),0 0 45px rgba(0,255,65,.35); transform:scale(1.05); }
+#slam-btn:active .slam-circle { transform:scale(.82); }
+.slam-word {
+    position:absolute; bottom:-12px; left:50%; transform:translateX(-50%);
+    font-size:6px; letter-spacing:3px; color:rgba(0,255,65,.25);
+}
+
+#timer {
+    position:absolute; bottom:45px; left:50%; transform:translateX(-50%);
+    width:80px; height:80px;
+    opacity:0; pointer-events:none; transition:opacity .3s;
+}
+#timer.on { opacity:1; }
+#timer svg { width:100%; height:100%; transform:rotate(-90deg); }
+.timer-bg { fill:none; stroke:rgba(255,255,255,.025); stroke-width:4; }
+.timer-bar {
+    fill:none; stroke:var(--g); stroke-width:4; stroke-linecap:round;
+    stroke-dasharray:553; stroke-dashoffset:0;
+    filter:drop-shadow(0 0 4px var(--g));
+    transition:stroke .3s;
+}
+#timer-num {
+    position:absolute; top:50%; left:50%; transform:translate(-50%,-55%);
+    font-size:22px; font-weight:900; color:var(--g); text-shadow:0 0 6px var(--g);
+}
+#timer-label {
+    position:absolute; bottom:12px; left:50%; transform:translateX(-50%);
+    font-size:6px; letter-spacing:3px; color:rgba(0,255,65,.25);
+}
+
+#hint {
+    margin-top:auto; text-align:center;
+    font-family:'Rajdhani',sans-serif;
+    font-size:9px; color:rgba(255,255,255,.1);
+    padding:4px; flex-shrink:0;
+}
+kbd {
+    display:inline-block; padding:1px 4px;
+    border:1px solid rgba(0,255,65,.06); border-radius:3px;
+    background:rgba(0,255,65,.015);
+    font-family:'Orbitron',monospace; font-size:7px;
+    color:rgba(0,255,65,.2);
+}
+
+@media(max-width:700px) {
+    #holo { height:42vh; }
+    .cf-card { width:180px; height:240px; margin-left:-90px; margin-top:-120px; }
+    #holo-name { font-size:15px; }
+}
+@media(max-width:480px) {
+    .cf-card { width:140px; height:185px; margin-left:-70px; margin-top:-92px; }
+    #holo-name { font-size:12px; letter-spacing:2px; }
+}

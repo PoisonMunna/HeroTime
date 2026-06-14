@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HeroTime</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- 1. Alien fullscreen background — lowest layer -->
+    <div id="alien-bg">
+        <div id="alien-bg-dark"></div>
+        <img id="alien-bg-img" src="">
+        <div id="alien-bg-text"></div>
+    </div>
+
+    <!-- 2. Three.js canvas -->
+    <canvas id="c"></canvas>
+
+    <!-- 3. Visual overlays -->
+    <div id="grid-overlay"></div>
+    <div id="glow-overlay"></div>
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div id="flash"></div>
+
+    <!-- 4. Hologram above watch -->
+    <div id="holo">
+        <div id="beam1"></div>
+        <div id="beam2"></div>
+        <div id="coverflow"><div id="cf-track"></div></div>
+        <div id="holo-name">HEATBLAST</div>
+        <div id="holo-sub">PYRONITE • Pyrokinesis</div>
+        <div id="holo-scan"></div>
+    </div>
+
+    <!-- 5. UI -->
+    <div id="ui">
+        <div id="topbar">
+            <div class="tb-left">
+                <span id="indicator"></span>
+                <span id="status-text">OMNITRIX v10 — STANDBY</span>
+            </div>
+            <span id="mode-tag">STANDBY</span>
+        </div>
+
+        <div id="arrows">
+            <button id="arrow-l" class="arr-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <span id="page-num">1 / 10</span>
+            <button id="arrow-r" class="arr-btn">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 6 15 12 9 18"/></svg>
+            </button>
+        </div>
+
+        <div id="slam-box">
+            <button id="slam-btn">
+                <span class="slam-anim"></span>
+                <span class="slam-circle"></span>
+                <span class="slam-word">SLAM</span>
+            </button>
+        </div>
+
+        <div id="timer">
+            <svg viewBox="0 0 200 200">
+                <circle class="timer-bg" cx="100" cy="100" r="88"/>
+                <circle id="timer-fill" class="timer-bar" cx="100" cy="100" r="88"/>
+            </svg>
+            <span id="timer-num">10</span>
+            <span id="timer-label">ACTIVE</span>
+        </div>
+
+        <div id="hint">
+            <kbd>CLICK</kbd> watch · <kbd>←→</kbd> dial · <kbd>ENTER</kbd> slam
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
