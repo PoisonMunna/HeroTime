@@ -415,8 +415,8 @@ function layoutCF(active, anim){
         var tx, ry, sc, z, op;
         if(diff===0){ tx=0; ry=0; sc=1; z=100; op=1; }
         else if(abs===1){ tx=diff*sp; ry=-diff*55; sc=.6; z=-30; op=.75; }
-        else if(abs===2){ tx=diff*sp*1.5; ry=-diff*63; sc=.4; z=-65; op=.4; }
-        else{ tx=diff*sp*1.6; ry=-diff*68; sc=.25; z=-90; op=.12; }
+        else if(abs===2){ tx=diff*sp*1.5; ry=-diff*63; sc=.4; z=-65; op=0; }
+        else{ tx=diff*sp*1.6; ry=-diff*68; sc=.25; z=-90; op=0; }
 
         if(anim){
             gsap.to(card, {x:tx, rotateY:ry, scale:sc, z:z, opacity:op, duration:.5, ease:"power2.out", overwrite:true});
